@@ -1,3 +1,6 @@
+
+---
+
 ### Dockerfile: `windows-cpp-cmake-build` (`Dockerfile.windows-cpp-cmake-build`)
 This Dockerfile is designed to create a Windows-based container environment tailored for building and compiling C++ projects. It leverages **Windows Server Core 2019** as the base image and installs essential tools for development.
 
@@ -36,3 +39,5 @@ This Dockerfile extends the `windows-cpp-cmake-build` image to create an environ
 - Simplifies building C++ projects in a Windows-based environment with CMake.
 - Ideal for CI/CD pipelines that require consistent builds with Visual Studio and CMake integration.
 - Supports modular project structures with a dedicated `build` directory.
+
+---
