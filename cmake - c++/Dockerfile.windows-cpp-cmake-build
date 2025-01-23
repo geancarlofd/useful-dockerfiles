@@ -1,0 +1,31 @@
+# Use the base image of Windows Server Core 2019
+FROM mcr.microsoft.com/windows:ltsc2019
+
+# Set the working directory to the root
+WORKDIR /
+
+# Update the system and install necessary tools
+RUN powershell -Command \
+    $ErrorActionPreference = 'Stop'; \
+    Invoke-WebRequest -Uri https://aka.ms/vs/17/release/vs_BuildTools.exe -OutFile vs_BuildTools.exe; \
+    Start-Process -FilePath .\vs_BuildTools.exe -ArgumentList '--quiet --wait --norestart --nocache', \
+        '--add Microsoft.VisualStudio.Workload.VCTools', \
+        '--add Microsoft.VisualStudio.Component.VC.CMake.Project', \
+        '--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64', \
+        '--add Microsoft.VisualStudio.Component.ATLMFC', \
+        '--add Microsoft.VisualStudio.Component.VC.ATLMFC', \
+        '--add Microsoft.VisualStudio.Workload.NativeDesktop', \
+        '--add Microsoft.VisualStudio.Workload.ManagedDesktop', \
+        '--add Microsoft.VisualStudio.Workload.Universal', \
+        '--add Microsoft.VisualStudio.Component.Windows10SDK.20348', \
+        '--includeRecommended' -NoNewWindow -Wait; \
+    Remove-Item -Force .\vs_BuildTools.exe
+
+# Install CMake
+RUN powershell -Command \
+    Invoke-WebRequest -Uri https://github.com/Kitware/CMake/releases/download/v3.27.5/cmake-3.27.5-windows-x86_64.msi -OutFile cmake-installer.msi; \
+    Start-Process msiexec.exe -ArgumentList '/i', 'cmake-installer.msi', '/quiet', '/norestart' -NoNewWindow -Wait; \
+    Remove-Item -Force cmake-installer.msi
+
+# Add CMake to the system PATH (for future container sessions)
+RUN setx PATH "%PATH%;C:\Program Files\CMake\bin"

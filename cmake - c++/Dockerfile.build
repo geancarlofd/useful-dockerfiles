@@ -1,0 +1,17 @@
+# Use a prebuilt CMake image as the base (Dockerfile.windows-cpp-cmake-build)
+FROM <windows-cpp-cmake-build-image>
+
+# Set the working directory to `/app/sdk`
+WORKDIR /app/sdk
+
+# Copy all the files from the current directory into the container
+COPY . .
+
+# Create a build directory, navigate to it, and generate the build system using CMake
+RUN mkdir build && cd build && cmake ..
+
+# Set the working directory to `/app/sdk/build` for the build process
+WORKDIR /app/sdk/build
+
+# Build the project in Release mode with verbose output
+RUN cmake --build . --config Release --verbose
